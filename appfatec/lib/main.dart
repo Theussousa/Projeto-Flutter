@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'botoes.dart';
+
+import 'dados.dart';
+import 'lista_perguntas.dart';
+import 'resultado.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,54 +56,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // Lista de perguntas com respostas
-  final List<Map<String, Object>> _perguntas = [
-    {
-      'pergunta': 'Qual a sua cor favorita?',
-      'respostas': [
-        'Preto',
-        'Vermelho',
-        'Azul',
-        'Verde',
-        'Branco',
-      ],
-    },
-    {
-      'pergunta': 'Qual o seu animal favorito?',
-      'respostas': [
-        'Cachorro',
-        'Gato',
-        'Pássaro',
-        'Peixe',
-        'Cavalo',
-        'Coelho',
-      ],
-    },
-    {
-      'pergunta': 'Qual o seu time do coração?',
-      'respostas': [
-        'Corinthians',
-        'Palmeiras',
-        'São Paulo',
-        'Santos',
-        'Flamengo',
-        'Vasco',
-        'Outro',
-      ],
-    },
-  ];
+  // Lista de perguntas vinda de dados.dart
+  final dados = perguntasRespostas;
+
+  // Lista de respostas escolhidas
+  final List<Map<String, String>> respostas = [];
 
   // Índice da pergunta atual
-  int _indicePergunta = 0;
+  int indicePergunta = 0;
 
-  // Método chamado pelos botões
-  void responder() {
+  // Getter para saber se ainda há perguntas
+  bool get temPergunta {
+    return indicePergunta < dados.length;
+  }
+
+  // Método chamado pelos botões, recebendo a resposta escolhida
+  void responder(String r) {
+    final String perguntaAtual = dados[indicePergunta].pergunta;
+
     setState(() {
-      if (_indicePergunta < _perguntas.length - 1) {
-        _indicePergunta++;
-      } else {
-        _indicePergunta = 0;
-      }
+      respostas.add({
+        'pergunta': perguntaAtual,
+        'resposta': r,
+      });
+      indicePergunta++;
+    });
+  }
+
+  void reiniciar() {
+    setState(() {
+      indicePergunta = 0;
+      respostas.clear();
     });
   }
 
@@ -125,26 +111,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _perguntas[_indicePergunta]['pergunta'].toString(),
-              style: const TextStyle(fontSize: 25),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ...(_perguntas[_indicePergunta]['respostas'] as List<String>)
-                .map(
-              (textoBotao) {
-                return Botoes(
-                  resp: responder,
-                  txt: textoBotao,
-                );
-              },
-            ).toList(),
-          ],
-        ),
+        child: temPergunta
+            ? ListaPerguntas(
+                indicePergunta: indicePergunta,
+                dados: dados,
+                responder: responder,
+              )
+            : Resultado(
+                respostas: respostas,
+                reiniciar: reiniciar,
+              ),
       ),
     );
   }

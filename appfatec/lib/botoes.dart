@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Botoes extends StatelessWidget {
   final String txt;
-  final Function() resp;
+  final void Function(String) resp;
 
   const Botoes({
     super.key,
@@ -17,7 +17,7 @@ class Botoes extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: resp,
+          onPressed: () => resp(txt),
           child: Text(
             txt,
             style: const TextStyle(fontSize: 20),
