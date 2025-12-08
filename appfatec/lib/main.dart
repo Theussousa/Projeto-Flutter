@@ -53,11 +53,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // Lista de perguntas
-  final List<String> _perguntas = [
-    'Qual a sua cor favorita?',
-    'Qual o seu animal favorito?',
-    'Qual o seu time do coração?',
+  // Lista de perguntas com respostas
+  final List<Map<String, Object>> _perguntas = [
+    {
+      'pergunta': 'Qual a sua cor favorita?',
+      'respostas': [
+        'Preto',
+        'Vermelho',
+        'Azul',
+        'Verde',
+        'Branco',
+      ],
+    },
+    {
+      'pergunta': 'Qual o seu animal favorito?',
+      'respostas': [
+        'Cachorro',
+        'Gato',
+        'Pássaro',
+        'Peixe',
+        'Cavalo',
+        'Coelho',
+      ],
+    },
+    {
+      'pergunta': 'Qual o seu time do coração?',
+      'respostas': [
+        'Corinthians',
+        'Palmeiras',
+        'São Paulo',
+        'Santos',
+        'Flamengo',
+        'Vasco',
+        'Outro',
+      ],
+    },
   ];
 
   // Índice da pergunta atual
@@ -99,25 +129,20 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              _perguntas[_indicePergunta],
-              style: const TextStyle(fontSize: 24),
+              _perguntas[_indicePergunta]['pergunta'].toString(),
+              style: const TextStyle(fontSize: 25),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            Botoes(
-              texto: 'Resposta 1',
-              resp: responder,
-            ),
-            const SizedBox(height: 8),
-            Botoes(
-              texto: 'Resposta 2',
-              resp: responder,
-            ),
-            const SizedBox(height: 8),
-            Botoes(
-              texto: 'Resposta 3',
-              resp: responder,
-            ),
+            const SizedBox(height: 20),
+            ...(_perguntas[_indicePergunta]['respostas'] as List<String>)
+                .map(
+              (textoBotao) {
+                return Botoes(
+                  resp: responder,
+                  txt: textoBotao,
+                );
+              },
+            ).toList(),
           ],
         ),
       ),
