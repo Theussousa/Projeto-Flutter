@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'itens.dart';
+
 class Resultado extends StatelessWidget {
   final List<Map<String, String>> respostas;
   final VoidCallback reiniciar;
@@ -12,33 +14,29 @@ class Resultado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Resultado',
-          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20),
-        Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: respostas.length,
-            itemBuilder: (context, index) {
-              final item = respostas[index];
-              return ListTile(
-                title: Text(item['pergunta'] ?? ''),
-                subtitle: Text('Sua resposta: ${item['resposta'] ?? ''}'),
-              );
-            },
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'Respostas',
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: reiniciar,
-          child: const Text('Reiniciar'),
-        ),
-      ],
+          const SizedBox(height: 16),
+          ...respostas.map(
+            (resp) => Itens(
+              pergunta: resp['pergunta'] ?? '',
+              resposta: resp['resposta'] ?? '',
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: reiniciar,
+            child: const Text('Reiniciar'),
+          ),
+        ],
+      ),
     );
   }
 }
