@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'dados.dart';
 import 'lista_perguntas.dart';
@@ -17,20 +18,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        textTheme: GoogleFonts.montserratTextTheme(),
       ),
       home: const MyHomePage(title: 'Matheus Flores'),
     );
@@ -60,26 +50,37 @@ class _MyHomePageState extends State<MyHomePage> {
   final dados = perguntasRespostas;
 
   // Lista de respostas escolhidas
-  final List<Map<String, String>> respostas = [];
+  final List<Map<String, dynamic>> respostas = [];
 
   // Índice da pergunta atual
   int indicePergunta = 0;
+
+  // Pontuação total
+  int totalPontos = 0;
 
   // Getter para saber se ainda há perguntas
   bool get temPergunta {
     return indicePergunta < dados.length;
   }
 
-  // Método chamado pelos botões, recebendo a resposta escolhida
-  void responder(String r) {
+  @override
+  void initState() {
+    super.initState();
+    dados.shuffle();
+  }
+
+  // Método chamado pelos botões, recebendo a resposta escolhida e a pontuação
+  void responder(String r, int ponto) {
     final String perguntaAtual = dados[indicePergunta].pergunta;
 
     setState(() {
       respostas.add({
         'pergunta': perguntaAtual,
         'resposta': r,
+        'ponto': ponto,
       });
       indicePergunta++;
+      totalPontos += ponto;
     });
   }
 
@@ -87,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       indicePergunta = 0;
       respostas.clear();
+      totalPontos = 0;
+      dados.shuffle();
     });
   }
 
@@ -99,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 245, 242, 235),
       appBar: AppBar(
         backgroundColor: Colors.amber,
         toolbarHeight: 80,
@@ -110,17 +114,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: Center(
-        child: temPergunta
-            ? ListaPerguntas(
-                indicePergunta: indicePergunta,
-                dados: dados,
-                responder: responder,
-              )
-            : Resultado(
-                respostas: respostas,
-                reiniciar: reiniciar,
-              ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          temPergunta
+              ? ListaPerguntas(
+                  indicePergunta: indicePergunta,
+                  dados: dados,
+                  responder: responder,
+                )
+              : Resultado(
+                  respostas: respostas,
+                  reiniciar: reiniciar,
+                  totalPontos: totalPontos,
+                ),
+        ],
       ),
     );
   }

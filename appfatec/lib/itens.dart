@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class Itens extends StatelessWidget {
   final String pergunta;
   final String resposta;
+  final int ponto;
 
   const Itens({
     super.key,
     required this.pergunta,
     required this.resposta,
+    required this.ponto,
   });
 
   @override
@@ -17,7 +19,7 @@ class Itens extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               pergunta,
@@ -25,11 +27,14 @@ class Itens extends StatelessWidget {
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
             Text(
               resposta.toUpperCase(),
-              style: const TextStyle(fontSize: 16),
+              style: TextStyle(
+                fontSize: 16,
+                color: ponto == 0 ? Colors.red : Colors.green,
+              ),
             ),
           ],
         ),
